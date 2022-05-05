@@ -10,4 +10,4 @@ RUN npm install -g @nestjs/cli
 
 RUN pnpm install
 
-CMD nest start --watch
+CMD nest start

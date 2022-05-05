@@ -1,9 +1,9 @@
 export interface TimeTablesResult {
   open: boolean;
-  timetables: timetableState[];
+  timetables: TimetableState[];
 }
 
-export interface timetableState {
+export interface TimetableState {
   opening: string;
   closing: string;
 }

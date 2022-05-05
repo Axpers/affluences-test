@@ -36,7 +36,7 @@ export class ReservationsService {
     resourceId: string,
     date: string,
     hour: string,
-  ): Promise<any> {
+  ): Promise<boolean> {
     try {
       if (
         this.isIdValid(resourceId) &&
@@ -46,14 +46,57 @@ export class ReservationsService {
         const openedSlots = await this.fetchOpenedSlots(resourceId, date);
         const timeTables = await this.fetchTimeTables(resourceId, date);
 
-        return timeTables;
+        if (!timeTables.open) {
+          return false;
+        }
 
-        // Compare if input date match both ressources
+        const availableHours = this.getAvailableHours(openedSlots, timeTables);
+        return availableHours.includes(Number(hour));
       }
     } catch (e) {
       throw e;
     }
   }
+
+  //#region Get available hours
+  private getAvailableHours(
+    reservationResult: ReservationResult,
+    timeTablesResult: TimeTablesResult,
+  ) {
+    const range = (size: number, startAt = 0): number[] => {
+      return [...Array(size).keys()].map((i) => i + startAt);
+    };
+
+    const getHour = (dateTime: string): number => {
+      const result = dateTime.split(' ')[1].split(':')[0];
+      return Number(result);
+    };
+
+    const availableHoursArray = timeTablesResult.timetables
+      .map((e) => {
+        const start = getHour(e.opening);
+        const end = getHour(e.closing);
+
+        return range(end - start, start);
+      })
+      .reduce((acc, curr) => {
+        return acc.concat(curr);
+      });
+
+    const reservedHoursArray = reservationResult.reservations
+      .map((e) => {
+        const start = getHour(e.reservationStart);
+        const end = getHour(e.reservationEnd);
+
+        return range(end - start, start);
+      })
+      .reduce((acc, curr) => {
+        return acc.concat(curr);
+      });
+
+    return availableHoursArray.filter((e) => !reservedHoursArray.includes(e));
+  }
+  //#endregion
 
   //#region Microservice fetching
   private async fetchOpenedSlots(
