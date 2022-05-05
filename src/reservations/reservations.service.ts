@@ -12,7 +12,7 @@ export class ReservationsService {
 
   constructor(private httpService: HttpService) {}
 
-  //#region Validations
+  //#region Query validations
   isDateValid(date: string): boolean {
     const isValid = moment(date, moment.ISO_8601, true).isValid();
     if (isValid) return isValid;
@@ -37,7 +37,6 @@ export class ReservationsService {
     date: string,
     hour: string,
   ): Promise<any> {
-    // Check if date and ressource are valid, and if it has an hour
     try {
       if (
         this.isIdValid(resourceId) &&

@@ -3,6 +3,6 @@ export interface ReservationResult {
 }
 
 export interface Reservation {
-  reservationStart: Date;
-  reservationEnd: Date;
+  reservationStart: string;
+  reservationEnd: string;
 }
