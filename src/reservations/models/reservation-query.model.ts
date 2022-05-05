@@ -1,6 +1,6 @@
 import { IsDateString, IsDefined, IsNotEmpty, IsString } from 'class-validator';
 
-export class ReservationRequest {
+export class ReservationQuery {
   @IsDefined()
   @IsNotEmpty()
   @IsString()
