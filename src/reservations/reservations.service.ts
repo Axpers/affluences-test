@@ -3,6 +3,7 @@ import { ReservationResult } from './models/reservation.model';
 import { HttpService } from '@nestjs/axios';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
+import * as moment from 'moment';
 
 @Injectable()
 export class ReservationsService {
@@ -11,29 +12,53 @@ export class ReservationsService {
 
   constructor(private httpService: HttpService) {}
 
-  isValidDate(date: string) {
-    // Check if match
-    return true;
+  //#region Validations
+  isDateValid(date: string): boolean {
+    const isValid = moment(date, moment.ISO_8601, true).isValid();
+    if (isValid) return isValid;
+    else throw new BadRequestException('Date is not valid');
   }
 
-  async isAvailable(inputResourceId: string, date: string): Promise<any> {
-    const resourceId = Number(inputResourceId);
+  isHourValid(hour: String): boolean {
+    const isValid = Number(hour) >= 0 && Number(hour) <= 24;
+    if (isValid) return isValid;
+    else throw new BadRequestException('Hour is not valid');
+  }
 
+  isIdValid(id: string): boolean {
+    const isValid = this.acceptedIds.includes(Number(id));
+    if (isValid) return isValid;
+    else throw new BadRequestException('Id is not valid');
+  }
+  //#endregion
+
+  async isAvailable(
+    resourceId: string,
+    date: string,
+    hour: string,
+  ): Promise<any> {
     // Check if date and ressource are valid, and if it has an hour
-    if (this.acceptedIds.includes(resourceId) && this.isValidDate(date)) {
-      const openedSlots = await this.fetchOpenedSlots(resourceId, date);
-      const timeTables = await this.fetchTimeTables(resourceId, date);
+    try {
+      if (
+        this.isIdValid(resourceId) &&
+        this.isDateValid(date) &&
+        this.isHourValid(hour)
+      ) {
+        const openedSlots = await this.fetchOpenedSlots(resourceId, date);
+        const timeTables = await this.fetchTimeTables(resourceId, date);
 
-      return timeTables;
+        return timeTables;
 
-      // Compare if input date match both ressources
-    } else {
-      throw new BadRequestException('Id or date are invalid');
+        // Compare if input date match both ressources
+      }
+    } catch (e) {
+      throw e;
     }
   }
 
+  //#region Microservice fetching
   private async fetchOpenedSlots(
-    resourceId: number,
+    resourceId: string,
     date: string,
   ): Promise<ReservationResult> {
     const dateWithoutHour = date;
@@ -48,7 +73,7 @@ export class ReservationsService {
   }
 
   private async fetchTimeTables(
-    resourceId: number,
+    resourceId: string,
     date: string,
   ): Promise<TimeTablesResult> {
     const dateWithoutHour = date;
@@ -61,4 +86,5 @@ export class ReservationsService {
 
     return result.data;
   }
+  //#endregion
 }
