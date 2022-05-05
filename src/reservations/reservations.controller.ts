@@ -9,16 +9,20 @@ export class ReservationsController {
 
   @Get()
   async isAvailable(@Query() query: ReservationRequest) {
-    const result = await this.reservationsService.isAvailable(
-      query.resourceId,
-      query.date,
-      query.hour,
-    );
+    try {
+      const result = await this.reservationsService.isAvailable(
+        query.resourceId,
+        query.date,
+        query.hour,
+      );
 
-    const response: Response = {
-      available: result,
-    };
+      const response: Response = {
+        available: result,
+      };
 
-    return response;
+      return response;
+    } catch (e) {
+      throw e;
+    }
   }
 }

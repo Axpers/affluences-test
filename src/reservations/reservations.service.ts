@@ -43,12 +43,13 @@ export class ReservationsService {
         this.isDateValid(date) &&
         this.isHourValid(hour)
       ) {
-        const openedSlots = await this.fetchOpenedSlots(resourceId, date);
         const timeTables = await this.fetchTimeTables(resourceId, date);
-
+        // Early return, not to fetch for the reservations if not open
         if (!timeTables.open) {
           return false;
         }
+
+        const openedSlots = await this.fetchOpenedSlots(resourceId, date);
 
         const availableHours = this.getAvailableHours(openedSlots, timeTables);
         return availableHours.includes(Number(hour));
