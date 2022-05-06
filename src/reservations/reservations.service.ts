@@ -8,7 +8,7 @@ import * as moment from 'moment';
 @Injectable()
 export class ReservationsService {
   private acceptedIds: number[] = [1337];
-  private reservationServiceUrl = `http://localhost:8080`;
+  private reservationServiceUrl = `http://192.168.1.17:8080`;
 
   constructor(private httpService: HttpService) {}
 

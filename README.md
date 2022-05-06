@@ -44,3 +44,15 @@ Response
 
 
 ## Build and run
+You can run this service with docker, there is a Dockerfile available
+
+### Build the image
+```docker
+docker build -t affluences-test .
+```
+
+### Run container
+```docker
+docker run --name affluences-test -p 4000:4000 -d affluences-test
+```
+
