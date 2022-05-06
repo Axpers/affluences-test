@@ -51,7 +51,11 @@ export class ReservationsService {
 
         const openedSlots = await this.fetchOpenedSlots(resourceId, date);
 
-        const availableHours = this.getAvailableHours(openedSlots, timeTables);
+        const availableHours: number[] = this.getAvailableHours(
+          openedSlots,
+          timeTables,
+        );
+        
         return availableHours.includes(Number(hour));
       }
     } catch (e) {
@@ -63,7 +67,7 @@ export class ReservationsService {
   private getAvailableHours(
     reservationResult: ReservationResult,
     timeTablesResult: TimeTablesResult,
-  ) {
+  ): number[] {
     const range = (size: number, startAt = 0): number[] => {
       return [...Array(size).keys()].map((i) => i + startAt);
     };
