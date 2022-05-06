@@ -16,15 +16,10 @@ http://localhost:4000/
 ## Routes :
 
 ### Availability
-
 This route returns reservations for a given resource for a date
-
 **URI** : /reservations
-
 **Method** : GET
-
 **Parameters**
-
 | name | type | required |
 | ------ | ------ | ------|
 | date | date in format YYYY-MM-DD | yes |
@@ -32,7 +27,6 @@ This route returns reservations for a given resource for a date
 | hour | int | yes |
 
 **Example**
-
 GET http://localhost:4000/reservations?date=2022-05-06&resourceId=1337&hour=17
 
 Response
@@ -44,7 +38,9 @@ Response
 
 
 ## Build and run
-You can run this service with docker, there is a Dockerfile available
+You can run this service with docker, there is a Dockerfile available.
+
+**BUT** note that you will have to change the reservation service ip inside the `.env` file in the root of the project, since the container will not be running on localhost.
 
 ### Build the image
 ```docker
