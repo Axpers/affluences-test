@@ -4,13 +4,27 @@ import { HttpService } from '@nestjs/axios';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { lastValueFrom } from 'rxjs';
 import * as moment from 'moment';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class ReservationsService {
   private acceptedIds: number[] = [1337];
-  private reservationServiceUrl = `http://192.168.1.17:8080`;
+  private reservationServiceUrl: string;
 
-  constructor(private httpService: HttpService) {}
+  constructor(
+    private httpService: HttpService,
+    private configService: ConfigService,
+  ) {
+    const reservationServiceIp = this.configService.get<string>(
+      'RESERVATION_SERVICE_IP',
+    );
+
+    const reservationServicePort = this.configService.get<string>(
+      'RESERVATION_SERVICE_PORT',
+    );
+
+    this.reservationServiceUrl = `http://${reservationServiceIp}:${reservationServicePort}`;
+  }
 
   //#region Query validations
   isDateValid(date: string): boolean {
@@ -55,7 +69,7 @@ export class ReservationsService {
           openedSlots,
           timeTables,
         );
-        
+
         return availableHours.includes(Number(hour));
       }
     } catch (e) {
