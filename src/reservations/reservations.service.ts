@@ -15,6 +15,11 @@ export class ReservationsService {
     private httpService: HttpService,
     private configService: ConfigService,
   ) {
+    //#region Reservation service url configuration
+    const reservationServiceProtocol = this.configService.get<string>(
+      'RESERVATION_SERVICE_PROTOCOL',
+    );
+
     const reservationServiceIp = this.configService.get<string>(
       'RESERVATION_SERVICE_IP',
     );
@@ -22,8 +27,10 @@ export class ReservationsService {
     const reservationServicePort = this.configService.get<string>(
       'RESERVATION_SERVICE_PORT',
     );
+   
 
-    this.reservationServiceUrl = `http://${reservationServiceIp}:${reservationServicePort}`;
+    this.reservationServiceUrl = `${reservationServiceProtocol}://${reservationServiceIp}:${reservationServicePort}`;
+  //#endregion
   }
 
   //#region Query validations
