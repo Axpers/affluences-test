@@ -17,8 +17,11 @@ http://localhost:4000/
 
 ### Availability
 This route returns reservations for a given resource for a date
+
 **URI** : /reservations
+
 **Method** : GET
+
 **Parameters**
 | name | type | required |
 | ------ | ------ | ------|
